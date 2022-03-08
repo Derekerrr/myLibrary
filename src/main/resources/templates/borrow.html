@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+	<head th:replace="_fragment :: head(~{::title})">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>借阅信息</title>
+		<link rel="stylesheet" href="../css/me.css"/>
+		<!-- 引入semantic css-->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+	</head>
+	<body>
+		<!--导航-->
+		<nav th:replace="_fragment :: menu(3)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+			<div class="ui container">
+				<div class="ui inverted secondary stackable menu">
+					<h2 class="ui teal header item">图书管理系统后台管理</h2>
+					<a href="#" class="m-item item m-mobile-hide"><i class="book icon"></i>书库</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="idea icon"></i>分类</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="user icon"></i>会员</a>
+					<a href="#" class="active m-item item m-mobile-hide"><i class="copy icon"></i>借阅信息</a>
+					<div class="right m-item m-mobile-hide menu">
+						<div class="ui dropdown item">
+							<div class="text">
+								<img class="ui avatar image" src="https://picsum.photos/id/237/200/300" alt="" />
+								管理员
+							</div>
+							<div class="dropdown icon"></div>
+							<div class="menu">
+								<a href="#" class="item">注销</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+				<i class="sidebar icon"></i>
+			</a>
+		</nav>
+		
+
+		
+		
+		
+		<!--中间内容-->
+		<div class="m-container m-padding-tb-big">
+			<div class="ui container">
+				<!-- 表单 -->
+				<h2 class="ui teal header item">我的借阅记录</h2>
+				<form action="#" method="post" class="ui segment form" th:action="@{/borrow/search}">
+					<div class="inline fields">
+<!--						<div class="field">-->
+<!--							<input type="text" th:value="${borrowQuery.member_name}" name="member_name" placeholder="姓名"/>-->
+<!--						</div>-->
+						<div class="field">
+							<input type="text" th:value="${borrowQuery.book_name}" name="book_name" placeholder="书名"/>
+						</div>
+						<div class="field">
+							<div class="ui selection dropdown">
+								<input type="hidden" th:value="${borrowQuery.status}" name="status"/>
+								<i class="dropdown icon"></i>
+								<div class="default text">全部</div>
+								<div class="menu">
+									<div class="item" data-value=1>全部</div>
+									<div class="item" data-value=2>未还</div>
+									<div class="item" data-value=3>已还</div>
+									<div class="item" data-value=4>已逾期</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="field">
+							<div class="ui selection dropdown">
+								<input type="hidden" th:value="${borrowQuery.order}" name="order"/>
+								<i class="dropdown icon"></i>
+								<div class="default text">借阅时间排序</div>
+								<div class="menu">
+									<div class="item" data-value="1">倒序</div>
+									<div class="item" data-value="2">正序</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="field">
+							<button class="ui mini teal button">
+								<i class="search icon"></i>
+								搜索
+							</button>
+							<a th:href="@{/borrow}" class="ui mini teal button">
+								<i class="search icon"></i>
+								清除
+							</a>
+						</div>
+					</div>
+				</form>
+
+				<div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+					<i class="close icon"></i>
+					<div class="header">提示：</div>
+					<p th:text="${message}">result</p>
+				</div>
+
+				<!-- 表格 -->
+				<table class="ui celled table">
+					<thead>
+						<tr>
+							<th>编号</th>
+							<th>借书时间</th>
+							<th>书名</th>
+							<th>还书时间</th>
+							<th>是否逾期</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="record : ${page.list}">
+							<td>[[${record.id}]]</td>
+							<td th:text="${#dates.format(record.borrow_time,'yyyy-MM-dd')}">2022，2，1</td>
+							<td >《[[${record.book_name}]]》</td>
+<!--							<td th:text="${blog.published} ? '发布' : '草稿'">是</td>-->
+							<td th:text="${record.return_time}!=null ? ${#dates.format(record.return_time,'yyyy-MM-dd')} : '暂未归还'">2022，2，5</td>
+							<td>
+								<p th:text="${record.is_overdue} ? '逾期' : '未逾期'"></p>
+								<p th:if="${record.is_overdue} and ${record.is_punished}">(已缴纳罚款)</p>
+							</td>
+							<td>
+								<button th:if="${record.is_returned}==false" th:onclick="renew([[${record.id}]])" class="ui mini teal button">申请续借</button>
+								<a th:if="${record.is_returned}==false" th:href="@{/book/return/{id}(id=${record.id})}" href="#" class="ui mini teal button">提交还书申请</a>
+								<button th:if="${record.is_overdue} and ${record.is_punished}==false"  th:onclick="punish([[${record.id}]])"  type="button" class="ui mini violet button">缴纳逾期金￥20.00</button>
+							</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th colspan="6">
+								<div  th:if="${page.pages} > 1" class="ui pagination menu">
+									<a th:href="@{/borrow/{pageNum}(pageNum=${page.pageNum}-1)}" th:unless="${page.isFirstPage}" href="#" class="icon item">
+										<i class="left chevron icon"></i>
+									</a>
+									<a class="icon item" href="#">共[[${page.pages}]]页</a>
+									<a class="icon item" href="#">当前第[[${page.pageNum}]]页</a>
+									<a th:href="@{/borrow/{pageNum}(pageNum=${page.pageNum}+1)}" th:unless="${page.isLastPage}" href="#" class="icon item">
+										<i class="right chevron icon"></i>
+									</a>
+								</div>
+							</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<br>
+		<br>
+		<!--底部 footer-->
+		<footer th:replace="_fragment :: footer" class="ui inverted vertical segment m-padding-tb-massive">
+			<div class="ui center aligned container">
+				<div class="ui inverted divided stackable grid">
+					<div class="three wide column">
+						<div class="ui inverted link list">
+							<div class="item">
+								<img src="../../static/img/QRcode.png" class="ui rounded image" alt="" style="width: 100px;"/>
+							</div>
+						</div>	
+					</div>
+					<div class="three wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">最新博客</h4>
+						<div class="ui inverted link list">
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+						</div>
+					</div>
+					<div class="three wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">联系方式</h4>
+						<div class="ui inverted link list">
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+						</div>
+					</div>
+					<div class="seven wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">derek</h4>
+						<p class="m-text-thin m-text-spaced m-opacity-mini">https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"><</p>
+					</div>
+				</div>
+				<div class="ui inverted section divider"></div>
+				<p class="m-text-thin m-text-spaced m-opacity-mini">CopyRight</p>
+			</div>		
+		</footer>
+
+		<div class="ui dimmer modals page transition hidden">
+			<form class="ui mini test modal transition hidden" method="post" th:action="@{/apply/renew}">
+				<div class="header">
+					续借
+				</div>
+				<div class="content">
+
+					<input type="hidden" name="id" id="borrowId">
+					<div class="field">
+						<div class="ui selection dropdown">
+							<input type="hidden" value="3" name="days"/>
+							<i class="dropdown icon"></i>
+							<div class="default text">3天</div>
+							<div class="menu">
+								<div class="item" data-value=1>1天</div>
+								<div class="item" data-value=3>3天</div>
+								<div class="item" data-value=7>7天</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="actions">
+					<div class="ui negative button">
+						取消
+					</div>
+					<button class="ui positive right labeled icon button">
+						确定
+						<i class="checkmark icon"></i>
+					</button>
+				</div>
+				<div class="ui error message">
+					<!-- 错误提示 -->
+				</div>
+			</form>
+		</div>
+
+		<!-- 引入semantic js-->
+		<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+		
+		<script>
+			$('.menu.toggle').click(function(){
+				$('.m-item').toggleClass('m-mobile-hide');
+			})
+			$('.ui.dropdown').dropdown();
+			$('.message .close').on('click', function (){
+				$(this)
+						.closest('.message')
+						.transition('fade');
+
+			})
+
+			function returnBook(id){
+				let r = confirm('确认操作？');
+				if(r){
+					window.location.href="/admin/returnBook/"+id;
+				}
+			}
+			function renew(id)
+			{
+				$('#borrowId').val(id);
+				$('.ui.modal')
+						.modal('show')
+				;
+			}
+		</script>
+	</body>
+	
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<!--  th:replace="admin/_fragments :: head(~{::title})">-->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>注册</title>
+  <link rel="stylesheet" href="../static/css/me.css"  th:href="@{/css/me.css}"/>
+  <!-- 引入semantic css-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+</head>
+<body>
+  <div class="m-container-small m-padding-tb-massive" style="max-width: 30em!important;">
+    <div class="ui container" style="margin-top: 13em!important;">
+      <div class="ui middle aligned center aligned grid">
+        <div class="column">
+          <h2 class="ui teal image header">
+<!--            <img src="assets/images/logo.png" class="image">-->
+            <div class="content">
+              账号注册
+            </div>
+          </h2>
+          <div class="ui mini positive message" th:unless="${#strings.isEmpty(yes_message)}" th:text="${yes_message}" style="color: red"></div>
+          <form class="ui large form" method="post" action="#" th:action="@{/register/post}">
+            <div class="ui stacked segment">
+              <div class="field">
+                <div class="ui left icon input">
+                  <i class="user icon"></i>
+                  <input type="text" name="email" th:value="${applyMember.email}" id="email" placeholder="邮箱" spellcheck="false" data-ms-editor="true">
+                </div>
+              </div>
+              <div class="field">
+                <div class="ui left icon input">
+                  <i class="lock icon"></i>
+                  <input type="password" th:value="${applyMember.password1}" name="password1" placeholder="密码">
+                </div>
+              </div>
+			  <div class="field">
+			    <div class="ui left icon input">
+			      <i class="lock icon"></i>
+			      <input type="password" th:value="${applyMember.password2}" name="password2" placeholder="重复密码">
+			    </div>
+			  </div>
+
+              <div class="field">
+                <div class="ui left icon input">
+                  <i class="code icon"></i>
+                  <input type="text" name="code" th:value="${applyMember.code}" placeholder="验证码">
+                  <button type="button" onclick="getCode()" class="ui fluid large teal button">获取验证码</button>
+                </div>
+
+              </div>
+
+              <button class="ui fluid large teal submit button">提交</button>
+              <br>
+              <div style="float: right;">
+                <a href="#" th:href="@{/login}">返回登录</a>
+              </div>
+              <br>
+            </div>
+
+              <div class="ui error message" style="color: red"></div>
+              <div class="ui mini negative message" th:unless="${#strings.isEmpty(message)}" th:text="${message}" style="color: red"></div>
+            <div id="messageDiv"  class="ui mini negative message" style="color: red;display: none"></div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 引入semantic js-->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script>
+        $('.ui.form').form({
+            fields: {
+                username : {
+                    identifier: 'username',
+                    rules: [{
+                        type: 'empty',
+                        prompt: '请输入用户名！'
+                    }]
+                },
+                password1 : {
+                    identifier: 'password1',
+                    rules: [{
+                        type: 'empty',
+                        prompt: '请设置密码！'
+                    }]
+                },
+                password2 : {
+                  identifier: 'password2',
+                  rules: [{
+                    type: 'empty',
+                    prompt: '请设置密码！'
+                  }]
+                },
+                code : {
+                  identifier: 'code',
+                  rules: [{
+                    type: 'empty',
+                    prompt: '请输入验证码！'
+                  }]
+              }
+            }
+        })
+        //获取验证码
+        function getCode(){
+          let email = $('#email').val();
+          if (!/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(email)) {
+            document.getElementById('messageDiv').innerHTML = '请检查邮件格式！';
+            $('#messageDiv').show('block');
+            return;
+          }
+          $.ajax({
+            url:"/register/getCode/"+email,
+            type:"get",
+            success:function (resData) {
+              alert(resData.message);
+            }
+            // error:function () {
+            //   $(document.getElementById('messageDiv').innerHTML = '邮件发送失败!';
+            //   $('#messageDiv').show('block');
+            // }
+          })
+        }
+    </script>
+</body>
+</html>

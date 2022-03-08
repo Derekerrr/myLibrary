@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://162.14.109.184:3306/library?useUnicode=true&characterEncoding=UTF-8
+    username: library
+    password: xxH5LBL2X3aLKXr6
+  mail:
+    host: smtp.163.com
+    username: derekerrr@163.com
+    password: EWVZKTNHGLQZVDSU
+    protocol: smtp
+    default-encoding: UTF-8
+    test-connection: true
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+mybatis:
+  type-aliases-package: com.example.mylibrary.entity
+  mapper-locations: classpath:/mybatis/*.xml
+server:
+  port: 8082

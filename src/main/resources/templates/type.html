@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+	<head th:replace="_fragment :: head(~{::title})">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>分类管理</title>
+		<link rel="stylesheet" href="../css/me.css"/>
+		<!-- 引入semantic css-->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+	</head>
+	<body>
+		<!--导航-->
+		<nav th:replace="_fragment :: menu(2)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+			<div class="ui container">
+				<div class="ui inverted secondary stackable menu">
+					<h2 class="ui teal header item">图书管理系统后台管理</h2>
+					<a href="#" class="m-item item m-mobile-hide"><i class="book icon"></i>书库</a>
+					<a href="#" class="active m-item item m-mobile-hide"><i class="idea icon"></i>分类</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="user icon"></i>会员</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="copy icon"></i>借阅信息</a>
+					<div class="right m-item m-mobile-hide menu">
+						<div class="ui dropdown item">
+							<div class="text">
+								<img class="ui avatar image" src="https://picsum.photos/id/237/200/300" alt="" />
+								管理员
+							</div>
+							<div class="dropdown icon"></div>
+							<div class="menu">
+								<a href="#" class="item">注销</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+				<i class="sidebar icon"></i>
+			</a>
+		</nav>
+
+		
+		
+		
+		<!--中间内容-->
+		<div class="m-container-small m-padding-tb-big">
+			<div class="ui container">
+				
+				<!-- 表格 -->
+<!--				成功提示-->
+				<div class="ui success message" id="messageDiv" th:unless="${#strings.isEmpty(message)}">
+					<i class="close icon"></i>
+					<div class="header">提示：</div>
+					<p th:text="${message}" id="message">result</p>
+				</div>
+				<table class="ui celled table">
+					<thead>
+						<tr>
+							<th>类编号</th>
+							<th>类名</th>
+							<th>描述</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="type : ${types}">
+							<td th:text="${type.id}">1</td>
+							<td th:text="${type.name}">java开发手册</td>
+							<td th:text="${type.description}">Derek</td>
+							<td>
+								<a href="#" th:href="@{/type/{id}(id=${type.id})}" class="ui mini violet button">查看该分类所有书籍</a>
+							</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th colspan="6">
+
+							</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+
+		
+		
+		
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<!--底部 footer-->
+		<footer th:replace="_fragment :: footer" class="ui inverted vertical segment m-padding-tb-massive">
+			<div class="ui center aligned container">
+				<div class="ui inverted divided stackable grid">
+					<div class="three wide column">
+						<div class="ui inverted link list">
+							<div class="item">
+								<img src="../../static/img/QRcode.png" class="ui rounded image" alt="" style="width: 100px;"/>
+							</div>
+						</div>	
+					</div>
+					<div class="three wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">最新博客</h4>
+						<div class="ui inverted link list">
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+						</div>
+					</div>
+					<div class="three wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">联系方式</h4>
+						<div class="ui inverted link list">
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+						</div>
+					</div>
+					<div class="seven wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">derek</h4>
+						<p class="m-text-thin m-text-spaced m-opacity-mini">https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"><</p>
+					</div>
+				</div>
+				<div class="ui inverted section divider"></div>
+				<p class="m-text-thin m-text-spaced m-opacity-mini">CopyRight</p>
+			</div>		
+		</footer>
+
+
+		<!-- 引入semantic js-->
+		<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+		
+		<script>
+			$('.menu.toggle').click(function(){
+				$('.m-item').toggleClass('m-mobile-hide');
+			})
+			$('.ui.dropdown').dropdown();
+
+
+			$('.message .close').on('click', function (){
+				$(this)
+						.closest('.message')
+						.transition('fade');
+
+			})
+
+		</script>
+	</body>
+	
+</html>

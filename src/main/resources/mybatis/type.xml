@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mylibrary.dao.TypeDao">
+
+    <select id="findAll" resultType="com.example.mylibrary.entity.Type">
+        select * from type;
+    </select>
+
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.example.mylibrary.entity.Type">
+        select * from `type`
+        where id=#{id};
+    </select>
+    <insert id="insertOne" parameterType="com.example.mylibrary.entity.Type">
+        insert into `type`(name,description) values(#{name},#{description});
+    </insert>
+    <update id="updateById" parameterType="com.example.mylibrary.entity.Type">
+        update type
+        set name=#{name},description=#{description}
+        where id=#{id};
+    </update>
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from `type`
+        where id=#{id};
+    </delete>
+</mapper>

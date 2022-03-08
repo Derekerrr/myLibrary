@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:fragment="head(title)">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>搜索书籍</title>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}" />
+    <!-- 引入semantic css-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+</head>
+<body>
+<!--导航-->
+    <nav th:fragment="menu(n)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+    <div class="ui container">
+        <div class="ui inverted secondary stackable menu">
+            <h2 class="ui teal header item">小克的图书馆</h2>
+            <a href="#" th:href="@{/book}" class="m-item item m-mobile-hide" th:classappend="${n==1} ? 'active'"> <i class="book icon"></i>搜索书籍</a>
+            <a href="#" th:href="@{/type}" class="m-item item m-mobile-hide" th:classappend="${n==2} ? 'active'"> <i class="idea icon"></i>分类查找</a>
+            <a href="#" th:href="@{/borrow}" class="m-item item m-mobile-hide" th:classappend="${n==3} ? 'active'"> <i class="copy icon"></i>我的借阅</a>
+            <a href="#" th:href="@{/apply}" class="m-item item m-mobile-hide" th:classappend="${n==4} ? 'active'"> <i class="copy icon"></i>我的申请</a>
+            <a href="#" th:href="@{/me}" class="m-item item m-mobile-hide" th:classappend="${n==5} ? 'active'"> <i class="user icon"></i>我的信息</a>
+            <div class="right m-item m-mobile-hide menu">
+                <div class="ui dropdown item">
+                    <div class="text">
+                        <img class="ui avatar image" src="https://picsum.photos/id/237/200/300" alt="" />
+                        <span th:text="${username}">登录用户</span>
+                    </div>
+                    <div class="dropdown icon"></div>
+                    <div class="menu">
+                        <a href="#" th:href="@{/logout}" class="item">注销</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+        <i class="sidebar icon"></i>
+    </a>
+</nav>
+
+
+<!--底部 footer-->
+<footer th:fragment="footer" class="ui inverted vertical segment m-padding-tb-massive">
+    <div class="ui center aligned container">
+        <div class="ui inverted divided stackable grid">
+            <div class="three wide column">
+                <div class="ui inverted link list">
+                    <div class="item">
+                        <img src="../../static/img/QRcode.png" th:src="@{/img/QRcode.png}" class="ui rounded image" alt="" style="width: 100px;"/>
+                    </div>
+                </div>
+            </div>
+            <div class="three wide column">
+                <h4 class="ui inverted header m-text-thin m-text-spaced">新书推荐</h4>
+                <div class="ui inverted link list">
+                    <a href="#" class="item">用户故事</a>
+                    <a href="#" class="item">用户故事</a>
+                    <a href="#" class="item">用户故事</a>
+                </div>
+            </div>
+            <div class="three wide column">
+                <h4 class="ui inverted header m-text-thin m-text-spaced">新书推荐</h4>
+                <div class="ui inverted link list">
+                    <a href="#" class="item">用户故事</a>
+                    <a href="#" class="item">用户故事</a>
+                    <a href="#" class="item">用户故事</a>
+                </div>
+            </div>
+            <div class="seven wide column">
+                <h4 class="ui inverted header m-text-thin m-text-spaced">图书馆</h4>
+                <p class="m-text-thin m-text-spaced m-opacity-mini">https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"><</p>
+            </div>
+        </div>
+        <div class="ui inverted section divider"></div>
+        <p class="m-text-thin m-text-spaced m-opacity-mini">CopyRight of Derek Library </p>
+    </div>
+</footer>
+
+</body>
+</html>

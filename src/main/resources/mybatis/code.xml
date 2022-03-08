@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mylibrary.dao.CodeDao">
+
+    <select id="getOneByEmail" parameterType="java.lang.String" resultType="com.example.mylibrary.entity.Code">
+        select * from code where email=#{email};
+    </select>
+
+    <delete id="deleteByEmail" parameterType="java.lang.String">
+        delete from code where email=#{email};
+    </delete>
+    <insert id="insertOne" parameterType="com.example.mylibrary.entity.Code">
+        insert into code(email, code_string) values (#{email},#{code_string})
+    </insert>
+</mapper>

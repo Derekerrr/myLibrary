@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mylibrary.dao.BookDao">
+
+    <select id="getBookList" parameterType="com.example.mylibrary.entity.query.BookQuery" resultType="com.example.mylibrary.entity.Book">
+        select * from book
+        <where>
+            <if test="searchName != null">
+                name like '%${searchName}%'
+            </if>
+            <if test="searchAuthor != null">
+                OR author like '%${searchAuthor}%'
+            </if>
+            <if test="searchType != null">
+                OR `type` = #{searchType}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertBook" parameterType="com.example.mylibrary.entity.Book">
+        insert into book(isbn,name,type,number,author,price,description)
+        values (#{isbn},#{name},#{type},#{number},#{author},#{price},#{description});
+    </insert>
+
+    <select id="getByIsbn" parameterType="java.lang.String" resultType="com.example.mylibrary.entity.Book">
+        select * from book where isbn=#{isbn};
+    </select>
+
+    <update id="modifyByIsbn" parameterType="com.example.mylibrary.entity.Book">
+        update book
+        set name=#{name},author=#{author},type=#{type},number=#{number},
+            price=#{price},description=#{description}
+        where isbn=#{isbn};
+    </update>
+
+    <delete id="deleteByIsbn" parameterType="java.lang.String">
+        delete from book
+        where isbn=#{isbn};
+    </delete>
+</mapper>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+	<head th:replace="_fragment :: head(~{::title})">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>我的信息</title>
+		<link rel="stylesheet" href="./css/me.css"/>
+		<!-- 引入semantic css-->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+	</head>
+	<body>
+		<!--导航-->
+		<nav th:replace="_fragment :: menu(5)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+			<div class="ui container">
+				<div class="ui inverted secondary stackable menu">
+					<h2 class="ui teal header item">图书管理系统</h2>
+					<a href="#" class="m-item item m-mobile-hide"><i class="home icon"></i>首页</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="idea icon"></i>分类</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="tags icon"></i>标签</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="clone icon"></i>归档</a>
+					<a href="#" class="active m-item item m-mobile-hide"><i class="info icon"></i>关于我</a>
+					
+					<div class="m-item right item m-mobile-hide">
+						<div class="ui input icon">
+							<input type="text" placeholder="搜索..."/>
+							<i class="search link icon"></i>
+						</div>
+		
+					</div>
+				</div>
+			</div>
+			<a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+				<i class="sidebar icon"></i>
+			</a>
+		</nav>
+		
+		
+		
+		
+		<!--中间内容-->
+		<div class="m-container m-padding-tb-big">
+			<div class="ui container">
+				<div class="ui stackable grid">
+					<!-- 左边 -->
+					<div class="nine wide column">
+						<div class="ui segment">
+							<img src="https://picsum.photos/id/237/800/600" alt="" class="ui rounded image"/>
+						</div>
+					</div>
+					<!-- 右边 -->
+					<div class="seven wide column">
+						<div class="ui top attached segment">
+							<div class="ui header">我的信息</div>
+						</div>
+						<div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+							<i class="close icon"></i>
+							<div class="header">提示：</div>
+							<p th:text="${message}">result</p>
+						</div>
+						<div class="ui attached segment">
+							<label for="name" class="ui teal right pointing basic label m-margin-bt-tiny">
+								昵称
+							</label>
+							<input id="name" value="derek" th:value="${member.name}" disabled="disabled" class="ui black basic label m-margin-bt-tiny"/>
+							<button id="nameModifyBtn" onclick="modifyName()" class="ui mini teal button">点击以编辑</button>
+							<button id="namePostBtn" onclick="postName()" class="ui mini teal button">提交</button>
+						</div>
+						<div class="ui attached segment"> 
+							<div class="ui teal right pointing basic label m-margin-bt-tiny">
+								邮箱
+							</div>
+							<div class="ui mini black button" th:text="${member.email}">2232@qq.com</div>
+						</div>
+						<div class="ui attached segment">
+							<div class="ui teal basic right pointing label m-margin-bt-tiny">
+								生日
+							</div>
+							<input id="birthday" disabled="disabled" type="date"
+								   th:value="${#dates.format(member.birthday, 'yyyy-MM-dd')}" class="ui black basic label m-margin-bt-tiny"/>
+							<button id="birthModifyBtn" onclick="modifyBirth()" class="ui mini teal button">点击以编辑</button>
+							<button id="birthPostBtn" onclick="postBirth()" class="ui mini teal button">提交</button>
+						</div>
+						<div class="ui attached segment">
+							<div class="ui teal basic right pointing label m-margin-bt-tiny">
+								余额
+							</div>
+							<div class="ui mini black button">￥[[${member.money}]]</div>
+							<button class="ui mini teal button" onclick="charge()">充值</button>
+						</div>
+
+						<div class="ui bottom attached segment">
+							<div style="text-align: center">
+								<button class="ui mini teal button" onclick="modifyPassword()">修改密码</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<br>
+		<br>
+		<!--底部 footer-->
+		<footer th:replace="_fragment :: footer" class="ui inverted vertical segment m-padding-tb-massive">
+			<div class="ui center aligned container">
+				<div class="ui inverted divided stackable grid">
+					<div class="three wide column">
+						<div class="ui inverted link list">
+							<div class="item">
+								<img src="./img/QRcode.png" class="ui rounded image" alt="" style="width: 100px;"/>
+							</div>
+						</div>	
+					</div>
+					<div class="three wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">最新博客</h4>
+						<div class="ui inverted link list">
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+						</div>
+					</div>
+					<div class="three wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">联系方式</h4>
+						<div class="ui inverted link list">
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+						</div>
+					</div>
+					<div class="seven wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">derek</h4>
+						<p class="m-text-thin m-text-spaced m-opacity-mini">https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"><</p>
+					</div>
+				</div>
+				<div class="ui inverted section divider"></div>
+				<p class="m-text-thin m-text-spaced m-opacity-mini">CopyRight</p>
+			</div>		
+		</footer>
+
+		<div class="ui dimmer modals page transition hidden">
+			<form class="ui mini red test modal transition hidden form" method="post" th:action="@{/me/newPassword}">
+				<div class="header">
+					修改密码
+				</div>
+				<div class="content">
+					<input name="oldPassword"  type="password" placeholder="旧密码" class="ui black basic label m-margin-bt-tiny"/><br>
+					<input name="newPassword1" type="password" placeholder="新密码" class="ui black basic label m-margin-bt-tiny"/><br>
+					<input name="newPassword2" type="password" placeholder="重复新密码" class="ui black basic label m-margin-bt-tiny"/><br>
+				</div>
+				<div class="actions">
+					<div class="ui negative button">
+						取消
+					</div>
+					<button class="ui positive right labeled icon button">
+						确定
+						<i class="checkmark icon"></i>
+					</button>
+					<div class="ui error message">
+						<!-- 错误提示 -->
+					</div>
+				</div>
+			</form>
+			<form class="ui mini teal test modal transition hidden" method="post" th:action="@{/me/charge}">
+				<div class="header">
+					充值
+				</div>
+				<div class="content">
+					<label for="money">充值金额(￥)最多200</label>
+					<input type="text" value="0" name="charge_money" id="money" onkeyup="clearNoNum(this)" class="ui black basic label m-margin-bt-tiny">
+				</div>
+				<div class="actions">
+					<div class="ui negative button">
+						取消
+					</div>
+					<button class="ui positive right labeled icon button">
+						确定
+						<i class="checkmark icon"></i>
+					</button>
+				</div>
+			</form>
+		</div>
+
+		<!-- 引入semantic js-->
+		<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+		
+		<script>
+			$('.message .close').on('click', function (){
+				$(this)
+						.closest('.message')
+						.transition('fade');
+
+			})
+			//充值
+			function charge() {
+				$('.ui.teal.modal')
+						.modal('show')
+				;
+			}
+			//改密
+			function modifyPassword(){
+				$('.ui.red.modal')
+						.modal('show')
+				;
+			}
+			 //$('#nameModifyBtn').show()
+			 $('#namePostBtn').hide()
+			 // $('#birthModifyBtn').show()
+			 $('#birthPostBtn').hide()
+
+			function modifyName(){
+				$('#name').removeAttr("disabled");
+				$('#nameModifyBtn').hide()
+				$('#namePostBtn').show()
+			}
+
+			function modifyBirth(){
+				$('#birthday').removeAttr("disabled");
+				$('#birthModifyBtn').hide()
+				$('#birthPostBtn').show();
+			}
+
+			 function postName(){
+				 let name = $('#name').val();
+				 if (name === "" || name == null){
+					 alert("昵称不能为空！");
+					 return;
+				 }
+				 window.location.href="/me/newName/"+name;
+			 }
+
+			 function postBirth(){
+				 let birthday = $('#birthday').val();
+				 console.log(name);
+				 if (birthday === "" || birthday == null){
+					 alert("生日不能为空！");
+					 return;
+				 }
+				 window.location.href="/me/newBirthday/"+birthday;
+			 }
+
+			$('.menu.toggle').click(function(){
+				$('.m-item').toggleClass('m-mobile-hide');
+			})
+			$('.qq').popup({
+				
+			})
+			$('.wechat').popup({
+				popup : $('.wechatQR'),
+				on : 'hover',
+				position: 'bottom center'
+			})
+			//价格输入
+			function clearNoNum(obj){
+
+				obj.value = obj.value.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
+
+				obj.value = obj.value.replace(/^\./g,""); //验证第一个字符是数字而不是.
+
+				obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的.
+
+				obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");//只允许输入一个小数点
+
+				obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+
+				if(obj.value>200){
+					obj.value=200;
+				}
+
+			}
+
+			$('.ui.form').form({
+				fields: {
+					oldPassword : {
+						identifier: 'oldPassword',
+						rules: [{
+							type: 'empty',
+							prompt: '请输入旧密码'
+						}]
+					},
+					newPassword1 : {
+						identifier: 'newPassword1',
+						rules: [{
+							type: 'empty',
+							prompt: '请输入新密码'
+						}]
+					},
+					newPassword2 : {
+						identifier: 'newPassword2',
+						rules: [{
+							type: 'empty',
+							prompt: '请确认新密码'
+						}]
+					}
+				}
+			})
+		</script>
+	</body>
+	
+</html>

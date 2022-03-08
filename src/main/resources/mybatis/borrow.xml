@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mylibrary.dao.BorrowDao">
+    <insert id="insertOne" parameterType="com.example.mylibrary.entity.Borrow">
+        insert into borrow(member_id,isbn,borrow_time,is_returned,return_time,days,is_overdue,is_punished)
+        values (#{member_id},#{isbn},#{borrow_time},#{is_returned},#{return_time},#{days},#{is_overdue},#{is_punished});
+    </insert>
+
+    <select id="findByCondition" parameterType="com.example.mylibrary.entity.query.BorrowQuery" resultType="com.example.mylibrary.entity.Borrow">
+        select bw.id,bw.member_id,bw.isbn,bw.borrow_time,bw.is_returned,bw.return_time,bw.days,bw.is_overdue,bw.is_punished,
+               m.name as member_name,bk.name as book_name
+        from borrow bw,member m,book bk
+        where bw.member_id=m.id and bw.isbn=bk.isbn
+        <if test="member_id !=null and member_id != ''">
+            and bw.member_id = #{member_id}
+        </if>
+        <if test="member_name !=null and member_name != ''">
+            and m.name like '%${member_name}%'
+        </if>
+        <if test="book_name !=null and book_name != ''">
+            and bk.name like '%${book_name}%'
+        </if>
+        <if test="status2 != null and status2 != ''">
+            and is_returned=false
+        </if>
+        <if test="status3 != null and status3 != ''">
+            and is_returned=true
+        </if>
+        <if test="status4 != null and status4 != ''">
+            and is_overdue=true
+        </if>
+        <if test="order1 != null and order1 != ''">
+            order by borrow_time desc
+        </if>
+        <if test="order2 != null and order2 != ''">
+            order by borrow_time asc
+        </if>
+    </select>
+
+    <select id="findByIsbn" parameterType="java.lang.String" resultType="com.example.mylibrary.entity.Borrow">
+        select *
+        from borrow
+        where isbn=#{isbn};
+    </select>
+
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.example.mylibrary.entity.Borrow">
+        select *
+        from borrow
+        where id=#{id};
+    </select>
+
+    <update id="updateOne" parameterType="com.example.mylibrary.entity.Borrow">
+        update borrow
+        set member_id=#{member_id},isbn=#{isbn},borrow_time=#{borrow_time},is_returned=#{is_returned},
+            return_time=#{return_time},days=#{days},is_overdue=#{is_overdue},is_punished=#{is_punished}
+        where id=#{id};
+    </update>
+
+    <select id="lastUpdateTime" resultType="java.util.Date">
+        select last_update_time
+        from `last`
+        where id=1
+    </select>
+    <update id="updateLastDate" parameterType="java.util.Date">
+        update `last`
+        set last_update_time=#{last_update_time}
+        where id=1
+    </update>
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from borrow
+        where id=#{id}
+    </delete>
+</mapper>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+	<head th:replace="admin/_fragment :: head(~{::title})">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>书库管理</title>
+		<link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}" />
+		<!-- 引入semantic css-->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+	</head>
+	<body>
+		<!--导航-->
+		<nav th:replace="admin/_fragment :: menu(1)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+			<div class="ui container">
+				<div class="ui inverted secondary stackable menu">
+					<h2 class="ui teal header item">图书管理系统后台管理</h2>
+					<a href="#" class="active m-item item m-mobile-hide"><i class="book icon"></i>书库</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="idea icon"></i>分类</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="user icon"></i>会员</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="copy icon"></i>借阅信息</a>
+					<div class="right m-item m-mobile-hide menu">
+						<div class="ui dropdown item">
+							<div class="text">
+								<img class="ui avatar image" th:src="@{/img/manager.png}" src="https://picsum.photos/id/237/200/300" alt="" />
+								管理员
+							</div>
+							<div class="dropdown icon"></div>
+							<div class="menu">
+								<a href="#" th:href="@{/admin/logout}" class="item">注销</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+				<i class="sidebar icon"></i>
+			</a>
+		</nav>
+		
+		<!-- 二级导航 -->
+		<div class="ui attached pointing menu">
+			<div class="ui container">
+				<div class="right menu">
+					<a href="#" th:href="@{/admin/addBook}" class="item">新书入库</a>
+					<a href="#" class="teal active item">书库信息</a>
+				</div>	
+			</div>
+			
+		</div>
+
+
+		<!--中间内容-->
+		<div class="m-container m-padding-tb-big">
+			<div class="ui container">
+				<!-- 表单 -->
+				<form action="#" method="post" class="ui segment form" th:action="@{/admin/book/search}">
+					<div class="inline fields">
+						<div class="field">
+							<input type="text" name="searchName" th:value="${bookQuery.searchName}" placeholder="书名"/>
+						</div>
+						<div class="field">
+							<input type="text" name="searchAuthor" th:value="${bookQuery.searchAuthor}" placeholder="作者"/>
+						</div>
+						<div class="field">
+							<div class="ui selection dropdown">
+								<input type="hidden" name="searchType" th:value="${bookQuery.searchType}"/>
+								<i class="dropdown icon"></i>
+								<div class="default text">分类</div>
+								<div class="menu">
+									<div class="item" th:each="type : ${types}" th:data-value="${type.id}" th:text="${type.name}" data-value="1">科幻</div>
+								</div>
+							</div>
+						</div>
+						<div class="field">
+							<button class="ui mini teal button">
+								<i class="search icon"></i>
+								搜索
+							</button>
+
+							<a th:href="@{/admin/book}" class="ui mini teal button">
+								<i class="search icon"></i>
+								清除
+							</a>
+
+						</div>
+					</div>
+				</form>
+				<!-- 表格 -->
+
+<!--				借书人信息-->
+				<!--				借书人信息-->
+				<div class="ui success message" th:unless="${#strings.isEmpty(selectMessage)}">
+					<div class="header">提示：</div>
+					<p th:text="${selectMessage}">result</p>
+				</div>
+
+				<div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+					<i class="close icon"></i>
+					<div class="header">提示：</div>
+					<p th:text="${message}">result</p>
+				</div>
+				<table class="ui celled table">
+					<thead>
+						<tr>
+							<th>ISBN</th>
+							<th>书名</th>
+							<th>作者</th>
+							<th>库存量</th>
+							<th>类别号</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="book : ${page.list}">
+							<td th:text="${book.isbn}">1</td>
+							<td>《[[${book.name}]]》</td>
+							<td th:text="${book.author}">Derek</td>
+							<td><div class="ui mini black button">[[${book.number}]]</div></td>
+							<td><div class="ui mini blue button">[[${book.type}]]</div></td>
+							<td>
+								<a href="#" th:href="@{/admin/selectBook/(isbn=${book.isbn},name=${book.name})}" class="ui mini orange button">出借</a>
+								<button type="button" th:onclick="showBookDetail([[${book}]])" class="ui mini teal button" >查看详情</button>
+								<a href="#" th:href="@{/admin/bookModify/{isbn}(isbn=${book.isbn})}" class="ui mini violet button">编辑信息</a>
+								<button type="button" th:onclick="deleteBook([[${book}]])" class="ui mini red button">移除书库</button>
+							</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th colspan="6">
+								<div th:if="${page.pages} > 1" class="ui pagination menu">
+									<a href="#" th:href="@{/admin/book/{pageNum}(pageNum=${page.pageNum}-1)}" th:unless="${page.isFirstPage}" class="icon item">
+										<i class="left chevron icon"></i>
+										上一页
+									</a>
+									<a class="icon item" href="#">共[[${page.pages}]]页</a>
+									<a class="icon item" href="#">当前第[[${page.pageNum}]]页</a>
+									<a href="#" th:href="@{/admin/book/{pageNum}(pageNum=${page.pageNum}+1)}" th:unless="${page.isLastPage}" class="icon item">
+										下一页
+										<i class="right chevron icon"></i>
+									</a>
+								</div>
+								<a th:href="@{/admin/addBook}" class="ui mini teal basic right floated button">新书入库</a>
+							</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<br>
+		<br>
+		<!--底部 footer-->
+		<footer th:replace="admin/_fragment :: footer" class="ui inverted vertical segment m-padding-tb-massive">
+			<div class="ui center aligned container">
+				<div class="ui inverted divided stackable grid">
+					<div class="three wide column">
+						<div class="ui inverted link list">
+							<div class="item">
+								<img src="../../static/img/QRcode.png" th:src="@{/static/img/QRcode.png}" class="ui rounded image" alt="" style="width: 100px;"/>
+							</div>
+						</div>	
+					</div>
+					<div class="three wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">新书推荐</h4>
+						<div class="ui inverted link list">
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+						</div>
+					</div>
+					<div class="three wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">新书推荐</h4>
+						<div class="ui inverted link list">
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+						</div>
+					</div>
+					<div class="seven wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">图书馆</h4>
+						<p class="m-text-thin m-text-spaced m-opacity-mini">https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"><</p>
+					</div>
+				</div>
+				<div class="ui inverted section divider"></div>
+				<p class="m-text-thin m-text-spaced m-opacity-mini">CopyRight of Derek Library </p>
+			</div>		
+		</footer>
+
+
+		<div class="ui dimmer modals page transition hidden">
+			<div class="ui small basic test modal transition hidden">
+				<div class="ui icon header">
+					<span id="detail_name">挪威的森林</span>
+				</div>
+				<div class="header">
+					<p id="detail_isbn">isbn</p>
+					<p id="detail_author">1</p>
+					<p id="detail_price">1</p>
+					<p id="detail_number">1</p>
+					<p id="detail_description">1</p><br>
+					<p id="detail_type">1</p>
+					<p id="detail_type_description">1</p>
+				</div>
+				<div class="actions">
+					<div class="ui red basic cancel inverted button">
+						<i class="remove icon"></i>
+						OK
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- 引入semantic js-->
+		<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+		
+		<script>
+
+			$('.menu.toggle').click(function(){
+				$('.m-item').toggleClass('m-mobile-hide');
+			})
+			$('.ui.dropdown').dropdown();
+			//
+			// //显示书的详情
+			// function lendBook(book){
+			// 	$.ajax({
+			// 		url:"/admin/selectBook/"+book.isbn+"&"+book.name,
+			// 		type:"get",
+			// 		success:function (resData) {
+			// 			let typeName = resData.name;
+			// 			let typeDescription = resData.description;
+			// 			document.getElementById('detail_type').innerHTML = "类型："+typeName;
+			// 			document.getElementById('detail_type_description').innerHTML = "类型简介："+typeDescription;
+			// 		}
+			// 	})
+			// 	$('.ui.modal')
+			// 			.modal('show')
+			// 	;
+			// }
+
+
+			function deleteBook(book){
+				let r = confirm('确认操作？');
+				if(r){
+					window.location.href="/admin/bookDelete/"+book.isbn;
+				}
+			}
+
+			//显示书的详情
+			function showBookDetail(book){
+				document.getElementById('detail_isbn').innerHTML = "ISBN:"+book.isbn;
+				document.getElementById('detail_name').innerHTML = "《"+book.name+"》";
+				document.getElementById('detail_author').innerHTML = "作者："+book.author;
+				document.getElementById('detail_number').innerHTML = "库存量："+book.number+"本";
+				document.getElementById('detail_price').innerHTML = "价格："+book.price+"元";
+				document.getElementById('detail_description').innerHTML = "书籍简介："+book.description;
+				$.ajax({
+					url:"/admin/getTypeName/"+book.type,
+					type:"get",
+					success:function (resData) {
+						let typeName = resData.name;
+						let typeDescription = resData.description;
+						document.getElementById('detail_type').innerHTML = "类型："+typeName;
+						document.getElementById('detail_type_description').innerHTML = "类型简介："+typeDescription;
+					}
+				})
+				$('.ui.modal')
+						.modal('show')
+				;
+			}
+			$('.message .close').on('click', function (){
+				$(this)
+						.closest('.message')
+						.transition('fade');
+
+			})
+		</script>
+	</body>
+	
+</html>

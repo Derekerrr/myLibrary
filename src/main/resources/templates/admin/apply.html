@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+	<head th:replace="admin/_fragment :: head(~{::title})">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>申请信息</title>
+		<link rel="stylesheet" href="../css/me.css"/>
+		<!-- 引入semantic css-->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+	</head>
+	<body>
+		<!--导航-->
+		<nav th:replace="admin/_fragment :: menu(5)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+			<div class="ui container">
+				<div class="ui inverted secondary stackable menu">
+					<h2 class="ui teal header item">图书管理系统后台管理</h2>
+					<a href="#" class="m-item item m-mobile-hide"><i class="book icon"></i>书库</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="idea icon"></i>分类</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="user icon"></i>会员</a>
+					<a href="#" class="active m-item item m-mobile-hide"><i class="copy icon"></i>借阅信息</a>
+					<div class="right m-item m-mobile-hide menu">
+						<div class="ui dropdown item">
+							<div class="text">
+								<img class="ui avatar image" src="https://picsum.photos/id/237/200/300" alt="" />
+								管理员
+							</div>
+							<div class="dropdown icon"></div>
+							<div class="menu">
+								<a href="#" class="item">注销</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+				<i class="sidebar icon"></i>
+			</a>
+		</nav>
+		
+
+		
+		
+		
+		<!--中间内容-->
+		<div class="m-container-small m-padding-tb-big">
+			<div class="ui container">
+				<!-- 表单 -->
+				<!-- 表单 -->
+				<form action="#" method="post" class="ui segment form" th:action="@{/admin/apply/search}">
+					<div class="inline fields">
+						<div class="field">
+							<input type="text" name="member_name" th:value="${applyQuery.member_name}" placeholder="会员名"/>
+						</div>
+						<div class="field">
+							<button class="ui mini teal button">
+								<i class="search icon"></i>
+								搜索
+							</button>
+
+							<a th:href="@{/admin/apply}" class="ui mini teal button">
+								<i class="search icon"></i>
+								清除
+							</a>
+
+						</div>
+					</div>
+				</form>
+
+				<div class="ui segment form">
+					<div class="inline fields">
+
+						<div class="field">
+							<button onclick="showTable1()" type="button" class="ui mini teal button">
+								<i class="search icon"></i>
+								借书申请
+							</button>
+							<button onclick="showTable2()" type="button" class="ui mini green button">
+								<i class="search icon"></i>
+								还书申请
+							</button>
+							<button onclick="showTable3()" type="button" class="ui mini blue button">
+								<i class="search icon"></i>
+								续借申请
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+					<i class="close icon"></i>
+					<div class="header">提示：</div>
+					<p th:text="${message}">result</p>
+				</div>
+
+				<div id="table1">
+					<!-- 表格 -->
+					<h3 class="ui teal header item">借书申请</h3>
+					<table class="ui celled table">
+						<thead>
+						<tr>
+							<th>申请编号</th>
+							<th>申请时间</th>
+							<th>申请人</th>
+							<th>ISBN</th>
+							<th>书   名</th>
+							<th>操   作</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr th:each="apply : ${applies}" th:if="${apply.type}==1">
+							<td>[[${apply.id}]]</td>
+							<td th:text="${#dates.format(apply.time,'yyyy-MM-dd')}">2022，2，1</td>
+							<td >[[${apply.member_name}]]</td>
+							<td >[[${apply.isbn}]]</td>
+							<td >《[[${apply.book_name}]]》</td>
+							<td>
+								<button th:onclick="agree([[${apply.id}]])" type="button" class="ui mini teal button">同意</button>
+								<button th:onclick="refuse([[${apply.id}]])" type="button" class="ui mini red button">拒绝</button>
+							</td>
+						</tr>
+						</tbody>
+						<tfoot>
+
+						</tfoot>
+					</table>
+				</div>
+				<div id="table2">
+					<!-- 表格 -->
+					<h3 class="ui green header item">还书申请</h3>
+					<table class="ui celled table">
+						<thead>
+						<tr>
+							<th>申请编号</th>
+							<th>申请时间</th>
+							<th>申请人</th>
+							<th>ISBN</th>
+							<th>书   名</th>
+							<th>操   作</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr th:each="apply : ${applies}" th:if="${apply.type}==2">
+							<td>[[${apply.id}]]</td>
+							<td th:text="${#dates.format(apply.time,'yyyy-MM-dd')}">2022，2，1</td>
+							<td >[[${apply.member_name}]]</td>
+							<td >[[${apply.isbn}]]</td>
+							<td >《[[${apply.book_name}]]》</td>
+							<td>
+								<button th:onclick="agree([[${apply.id}]])" type="button" class="ui mini teal button">同意</button>
+								<button th:onclick="refuse([[${apply.id}]])" type="button" class="ui mini red button">拒绝</button>
+							</td>
+						</tr>
+						</tbody>
+						<tfoot>
+						</tfoot>
+					</table>
+				</div>
+				<div id="table3">
+					<!-- 表格 -->
+					<h3 class="ui blue header item">续借申请</h3>
+					<table class="ui celled table">
+						<thead>
+						<tr>
+							<th>申请编号</th>
+							<th>申请时间</th>
+							<th>申请人</th>
+							<th>ISBN</th>
+							<th>书   名</th>
+							<th>续借天数</th>
+							<th>操   作</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr th:each="apply : ${applies}" th:if="${apply.type}==3">
+							<td>[[${apply.id}]]</td>
+							<td th:text="${#dates.format(apply.time,'yyyy-MM-dd')}">2022，2，1</td>
+							<td >[[${apply.member_name}]]</td>
+							<td >[[${apply.isbn}]]</td>
+							<td >《[[${apply.book_name}]]》</td>
+							<td >[[${apply.days}]]</td>
+							<td>
+								<button th:onclick="agree([[${apply.id}]])" type="button" class="ui mini teal button">同意</button>
+								<button th:onclick="refuse([[${apply.id}]])" type="button" class="ui mini red button">拒绝</button>
+							</td>
+						</tr>
+						</tbody>
+						<tfoot>
+						</tfoot>
+					</table>
+				</div>
+
+
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<br>
+		<br>
+		<!--底部 footer-->
+		<footer  th:replace="admin/_fragment :: footer" class="ui inverted vertical segment m-padding-tb-massive">
+			<div class="ui center aligned container">
+				<div class="ui inverted divided stackable grid">
+					<div class="three wide column">
+						<div class="ui inverted link list">
+							<div class="item">
+								<img src="../../static/img/QRcode.png" class="ui rounded image" alt="" style="width: 100px;"/>
+							</div>
+						</div>	
+					</div>
+					<div class="three wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">最新博客</h4>
+						<div class="ui inverted link list">
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+						</div>
+					</div>
+					<div class="three wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">联系方式</h4>
+						<div class="ui inverted link list">
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+						</div>
+					</div>
+					<div class="seven wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">derek</h4>
+						<p class="m-text-thin m-text-spaced m-opacity-mini">https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"><</p>
+					</div>
+				</div>
+				<div class="ui inverted section divider"></div>
+				<p class="m-text-thin m-text-spaced m-opacity-mini">CopyRight</p>
+			</div>		
+		</footer>
+		
+		<!-- 引入semantic js-->
+		<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+		
+		<script>
+
+			$('#table1').show();
+			$('#table2').hide();
+			$('#table3').hide();
+
+			function showTable1(){
+				$('#table1').show();
+				$('#table2').hide();
+				$('#table3').hide();
+			}
+			function showTable2(){
+				$('#table1').hide();
+				$('#table2').show();
+				$('#table3').hide();
+			}
+			function showTable3(){
+				$('#table1').hide();
+				$('#table2').hide();
+				$('#table3').show();
+			}
+			$('.menu.toggle').click(function(){
+				$('.m-item').toggleClass('m-mobile-hide');
+			})
+			$('.ui.dropdown').dropdown();
+			$('.message .close').on('click', function (){
+				$(this)
+						.closest('.message')
+						.transition('fade');
+
+			})
+
+			//同意借出
+			function agree(id){
+				let r = confirm('确认操作？');
+				if(r){
+					window.location.href="/admin/agree/"+id;
+				}
+			}
+
+			function refuse(id){
+				let r = confirm('确认操作？');
+				if(r){
+					window.location.href="/admin/refuse/"+id;
+				}
+			}
+		</script>
+	</body>
+	
+</html>

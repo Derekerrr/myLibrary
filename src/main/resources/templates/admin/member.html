@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+	<head th:replace="admin/_fragment :: head(~{::title})">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>注册会员</title>
+		<link rel="stylesheet" href="../css/me.css"/>
+		<!-- 引入semantic css-->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+	</head>
+	<body>
+		<!--导航-->
+		<nav th:replace="admin/_fragment :: menu(3)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+			<div class="ui container">
+				<div class="ui inverted secondary stackable menu">
+					<h2 class="ui teal header item">图书管理系统后台管理</h2>
+					<a href="#" class="m-item item m-mobile-hide"><i class="book icon"></i>书库</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="idea icon"></i>分类</a>
+					<a href="#" class="active m-item item m-mobile-hide"><i class="user icon"></i>会员</a>
+					<a href="#" class="m-item item m-mobile-hide"><i class="copy icon"></i>借阅信息</a>
+					<div class="right m-item m-mobile-hide menu">
+						<div class="ui dropdown item">
+							<div class="text">
+								<img class="ui avatar image" src="https://picsum.photos/id/237/200/300" alt="" />
+								管理员
+							</div>
+							<div class="dropdown icon"></div>
+							<div class="menu">
+								<a href="#" class="item">注销</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+				<i class="sidebar icon"></i>
+			</a>
+		</nav>
+				
+		
+		
+		<!--中间内容-->
+		<div class="m-container m-padding-tb-big">
+			<div class="ui container">
+				<!-- 表单 -->
+				<form action="#" method="post" class="ui segment form" th:action="@{/admin/member/search}">
+					<div class="inline fields">
+						<div class="field">
+							<input type="text" th:value="${memberQuery.name}" name="name" placeholder="姓名"/>
+						</div>
+						<div class="field">
+							<input type="text" th:value="${memberQuery.email}" name="email" placeholder="邮箱"/>
+						</div>
+						<div class="field">
+							<button class="ui mini teal button">
+								<i class="search icon"></i>
+								搜索
+							</button>
+						</div>
+
+						<a th:href="@{/admin/member}" class="ui mini teal button">
+							<i class="search icon"></i>
+							清除
+						</a>
+
+					</div>
+				</form>
+				<!-- 表格 -->
+<!--				待借书籍信息-->
+				<!--				借书人信息-->
+				<div class="ui success message" th:unless="${#strings.isEmpty(selectMessage)}">
+					<div class="header">提示：</div>
+					<p th:text="${selectMessage}">result</p>
+				</div>
+
+				<div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+					<i class="close icon"></i>
+					<div class="header">提示：</div>
+					<p th:text="${message}">result</p>
+				</div>
+
+				<table class="ui celled table">
+					<thead>
+						<tr>
+							<th>借阅号</th>
+							<th>姓名</th>
+							<th>邮箱</th>
+							<th>生日</th>
+							<th>余额(RMB)</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="member : ${page.list}">
+							<td th:text="${member.id}">1</td>
+							<td th:text="${member.name}">derek</td>
+							<td th:text="${member.email}">1@qq.com</td>
+							<td th:text="${#dates.format(member.birthday,'yyyy-MM-dd')}">2000.2.9</td>
+							<td><div class="ui mini black button">￥[[${member.money}]]</div></td>
+							<td>
+								<a href="#" th:href="@{/admin/selectMember/(id=${member.id},name=${member.name})}" class="ui mini teal button">借书</a>
+								<button type="button" th:onclick="modifyModal([[${member}]])" class="ui mini violet button">余额修改</button>
+								<a href="#" th:href="@{/admin/memberBorrow/(id=${member.id})}" class="ui mini purple button">查看借阅详情</a>
+							</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th colspan="6">
+								<div th:if="${page.pages} > 1" class="ui pagination menu">
+									<a href="#" th:href="@{/admin/member/{pageNum}(pageNum=${page.pageNum}-1)}" th:unless="${page.isFirstPage}" class="icon item">
+										<i class="left chevron icon"></i>
+									</a>
+									<a class="icon item" href="#">共[[${page.pages}]]页</a>
+									<a class="icon item" href="#">当前第[[${page.pageNum}]]页</a>
+									<a href="#" th:href="@{/admin/member/{pageNum}(pageNum=${page.pageNum}+1)}" th:unless="${page.isLastPage}" class="icon item">
+										<i class="right chevron icon"></i>
+									</a>
+								</div>
+							</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<br>
+		<br>
+		<!--底部 footer-->
+		<footer th:replace="admin/_fragment :: footer" class="ui inverted vertical segment m-padding-tb-massive">
+			<div class="ui center aligned container">
+				<div class="ui inverted divided stackable grid">
+					<div class="three wide column">
+						<div class="ui inverted link list">
+							<div class="item">
+								<img src="../../static/img/QRcode.png" class="ui rounded image" alt="" style="width: 100px;"/>
+							</div>
+						</div>	
+					</div>
+					<div class="three wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">最新博客</h4>
+						<div class="ui inverted link list">
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+						</div>
+					</div>
+					<div class="three wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">联系方式</h4>
+						<div class="ui inverted link list">
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+							<a href="#" class="item">用户故事</a>
+						</div>
+					</div>
+					<div class="seven wide column">
+						<h4 class="ui inverted header m-text-thin m-text-spaced">derek</h4>
+						<p class="m-text-thin m-text-spaced m-opacity-mini">https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"><</p>
+					</div>
+				</div>
+				<div class="ui inverted section divider"></div>
+				<p class="m-text-thin m-text-spaced m-opacity-mini">CopyRight</p>
+			</div>		
+		</footer>
+
+		<div class="ui dimmer modals page transition hidden">
+			<form class="ui mini test modal transition hidden" method="post" th:action="@{/admin/moneyModifyPost}">
+				<div class="header">
+					修改余额
+				</div>
+				<div class="content">
+
+					<input type="hidden" name="id" id="memberId">
+					<div class="field">
+						<div class="ui left labeled input">
+							<label class="ui teal basic label">余额</label>
+							<input type="text" id="memberMoney" name="money" onkeyup="clearNoNum(this)" placeholder="输入余额"/>
+						</div>
+					</div>
+
+				</div>
+				<div class="actions">
+					<div class="ui negative button">
+						取消
+					</div>
+					<button class="ui positive right labeled icon button">
+						确定
+						<i class="checkmark icon"></i>
+					</button>
+				</div>
+				<div class="ui error message">
+					<!-- 错误提示 -->
+				</div>
+			</form>
+		</div>
+
+
+		<!-- 引入semantic js-->
+		<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+		
+		<script>
+
+			$('.menu.toggle').click(function(){
+				$('.m-item').toggleClass('m-mobile-hide');
+			})
+			$('.ui.dropdown').dropdown();
+
+			function clearNoNum(obj){
+
+				obj.value = obj.value.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
+
+				obj.value = obj.value.replace(/^\./g,""); //验证第一个字符是数字而不是.
+
+				obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的.
+
+				obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");//只允许输入一个小数点
+
+				obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+
+			}
+
+			//打开修改modal
+			function modifyModal(member){
+				$('#memberId').val(member.id);
+				$('#memberMoney').val(member.money);
+				$('.ui.modal')
+						.modal('show')
+				;
+			}
+			$('.ui.modal').form({
+				fields: {
+					money : {
+						identifier: 'money',
+						rules: [{
+							type: 'empty',
+							prompt: '请输入余额'
+						}]
+					}
+				}
+			})
+			$('.message .close').on('click', function (){
+				$(this)
+						.closest('.message')
+						.transition('fade');
+
+			})
+		</script>
+	</body>
+	
+</html>
